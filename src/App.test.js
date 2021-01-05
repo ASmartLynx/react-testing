@@ -1,16 +1,36 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import App from './App';
 
 describe('App', () => {
-  it('render App component', async () => {
+  test('render App component', async () => {
     render(<App />);
-    expect(screen.queryByText(/Logged in as/i)).toBeNull();
-    screen.debug(); // Вывести снэпшот
-    expect(await screen.findByText(/Logged in as/i)).toBeInTheDocument();
+    await screen.findByText(/Logged in as/i);
+    expect(screen.queryByText(/Searches for React/)).toBeNull();
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: 'React' }
+    });
+    expect(screen.queryByText(/Searches for React/)).toBeInTheDocument();
+  });
+});
 
-    expect(screen.getByAltText(/search image/i)).toHaveClass('image');
-    expect(screen.getByLabelText(/search/i)).toBeRequired();
-    expect(screen.getByLabelText(/search/i)).toBeEmptyDOMElement();
-    expect(screen.getByLabelText(/search/i)).toHaveAttribute('id');
+describe('events', () => {
+it('checbox click', () => {
+    const handleChange = jest.fn();
+    const { container } = render(<input type="checkbox" onChange={handleChange} />);
+    const checkbox = container.firstChild;
+
+    expect(checkbox).not.toBeChecked();
+    fireEvent.click(checkbox);
+    expect(checkbox).toBeChecked();
+  });
+
+  it('input focus', () => {
+    const { getByTestId } = render(
+      <input type="text" data-testid="simple-input" />
+    );
+    const input = getByTestId('simple-input');
+    expect(input).not.toHaveFocus();
+    input.focus();
+    expect(input).toHaveFocus();
   });
 });
