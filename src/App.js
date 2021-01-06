@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Async from './Async';
 import './App.css';
 
 const getUser = () => Promise.resolve({ id: 1, name: 'Name' });
@@ -41,6 +42,7 @@ const App = () => {
         Search:
       </Search>
       <p>Searches for {search ? search : '...'}</p>
+      <Async />
     </div>
   )
 }
